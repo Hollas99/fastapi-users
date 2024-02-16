@@ -94,6 +94,7 @@ class FastAPIUsers(Generic[models.UP, models.ID]):
         backend: AuthenticationBackend,
         state_secret: SecretType,
         redirect_url: Optional[str] = None,
+        redirect_response: Optional[str] = None,
         associate_by_email: bool = False,
         is_verified_by_default: bool = False,
     ) -> APIRouter:
@@ -117,6 +118,7 @@ class FastAPIUsers(Generic[models.UP, models.ID]):
             self.get_user_manager,
             state_secret,
             redirect_url,
+            redirect_response,
             associate_by_email,
             is_verified_by_default,
         )

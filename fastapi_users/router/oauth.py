@@ -1,4 +1,5 @@
 from typing import Dict, List, Optional, Tuple, Type
+from fastapi.responses import RedirectResponse
 
 import jwt
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
@@ -33,6 +34,7 @@ def get_oauth_router(
     get_user_manager: UserManagerDependency[models.UP, models.ID],
     state_secret: SecretType,
     redirect_url: Optional[str] = None,
+    redirect_response: Optional[str] = None,
     associate_by_email: bool = False,
     is_verified_by_default: bool = False,
 ) -> APIRouter:
@@ -148,9 +150,16 @@ def get_oauth_router(
 
         # Authenticate
         response = await backend.login(strategy, user)
-        await user_manager.on_after_login(user, request, response)
-        return response
-
+        if redirect_response:
+            redirect = RedirectResponse(url=redirect_response, status_code=status.HTTP_303_SEE_OTHER)
+            if 'set-cookie' in response.headers:
+                redirect.headers.append(
+                    "set-cookie",
+                    response.headers['set-cookie']
+                )
+   
+        await user_manager.on_after_login(user, request, redirect_response)
+        return redirect if redirect_response else response
     return router
 
 
