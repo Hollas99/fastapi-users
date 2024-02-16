@@ -1,3 +1,15 @@
+A slight change to the fastapi-users oauth callback for users creating a more monolithic application
+
+- Added redirect_response parameter to the oauth router
+      if you're using a cookie as your transport, then adding a path to redirect_response will redirect the page on callback whilst also proving the jwt cookie
+
+
+
+
+
+
+
+
 # FastAPI Users
 
 <p align="center">
